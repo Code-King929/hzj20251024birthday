@@ -52,14 +52,49 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             z-index: 1000;
         }
+        
+        /* 添加播放提示样式 */
+        .play-prompt {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            font-size: 24px;
+            z-index: 2000;
+            cursor: pointer;
+        }
+        
+        .play-button {
+            margin-top: 20px;
+            padding: 15px 30px;
+            background: #6e8efb;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
+    <!-- 添加播放提示界面 -->
+    <div class="play-prompt" id="playPrompt">
+        <div>点击下方按钮开始</div>
+        <button class="play-button" onclick="startAll()">开始</button>
+    </div>
+    
     <!-- 添加音频元素和控制按钮 -->
     <audio id="background-music" loop>
         <source src="./audio/周深 - 小美满.flac" type="audio/mpeg">
     </audio>
-    <button class="music-control" onclick="toggleMusic()">⏸️</button>
+    <button class="music-control" onclick="toggleMusic()" id="musicControl" style="display:none;">⏸️</button>
     
     <script>
         // 生日祝福（带前缀）
@@ -92,25 +127,37 @@
             document.body.appendChild(popup);
         }
 
-        // 批量生成
+        // 批量生成变量
         let count = 0;
-        const interval = setInterval(() => {
-            createPopup();
-            count++;
-            if (count >= 150) clearInterval(interval);
-        }, 1500);
+        let interval;
+
+        // 开始所有功能的函数
+        function startAll() {
+            const playPrompt = document.getElementById('playPrompt');
+            const musicButton = document.getElementById('musicControl');
+            
+            // 隐藏提示界面
+            playPrompt.style.display = 'none';
+            
+            // 显示音乐控制按钮
+            musicButton.style.display = 'block';
+            
+            // 开始播放音乐
+            const music = document.getElementById('background-music');
+            music.play().catch(e => console.log("播放失败:", e));
+            
+            // 开始生成弹窗
+            interval = setInterval(() => {
+                createPopup();
+                count++;
+                if (count >= 150) clearInterval(interval);
+            }, 1500);
+        }
         
         // 音乐控制功能
         const music = document.getElementById('background-music');
-        const musicButton = document.querySelector('.music-control');
+        const musicButton = document.getElementById('musicControl');
         let isPlaying = true;
-        
-        // 尝试自动播放音乐
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                music.play().catch(e => console.log("自动播放失败:", e));
-            }, 1000);
-        });
         
         // 切换音乐播放/暂停
         function toggleMusic() {

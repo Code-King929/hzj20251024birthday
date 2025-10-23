@@ -88,11 +88,12 @@
     <div class="play-prompt" id="playPrompt">
         <div>点击下方按钮开始</div>
         <button class="play-button" onclick="startAll()">开始</button>
+        <div id="loadingText" style="margin-top: 20px; font-size: 16px;"></div>
     </div>
     
     <!-- 添加音频元素和控制按钮 -->
-    <audio id="background-music" loop>
-        <source src="./audio/周深 - 小美满.flac" type="audio/mpeg">
+    <audio id="background-music" loop preload="auto">
+        <source src="./audio/周深 - 小美满.mp3" type="audio/mpeg">
     </audio>
     <button class="music-control" onclick="toggleMusic()" id="musicControl" style="display:none;">⏸️</button>
     
@@ -135,18 +136,31 @@
         function startAll() {
             const playPrompt = document.getElementById('playPrompt');
             const musicButton = document.getElementById('musicControl');
+            const loadingText = document.getElementById('loadingText');
             
-            // 隐藏提示界面
-            playPrompt.style.display = 'none';
+            // 显示加载提示
+            loadingText.textContent = "音乐加载中，请稍候...";
             
-            // 显示音乐控制按钮
-            musicButton.style.display = 'block';
-            
-            // 开始播放音乐
+            // 尝试播放音乐
             const music = document.getElementById('background-music');
-            music.play().catch(e => console.log("播放失败:", e));
+            const playPromise = music.play();
             
-            // 开始生成弹窗
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    // 音乐播放成功
+                    loadingText.textContent = "";
+                    playPrompt.style.display = 'none';
+                    musicButton.style.display = 'block';
+                }).catch(error => {
+                    // 音乐播放失败或需要用户交互
+                    console.log("播放失败:", error);
+                    loadingText.textContent = "音乐加载失败，请确保文件存在";
+                    playPrompt.style.display = 'none';
+                    musicButton.style.display = 'block';
+                });
+            }
+            
+            // 开始生成弹窗（无论音乐是否加载完成）
             interval = setInterval(() => {
                 createPopup();
                 count++;

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>祝哈基杰二十岁</title>
+    <style>
+        .popup {
+            position: absolute;
+            padding: 20px;
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            border: 3px solid #fff;
+            border-radius: 15px;
+            font-family: "华文新魏", sans-serif;
+            font-size: 32px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            animation: fadeInScale 0.5s ease-out, float 3s ease-in-out infinite;
+            backdrop-filter: blur(5px);
+            transition: transform 0.3s ease;
+            
+        }
+        
+        .popup:hover {
+            transform: scale(1.1);
+        }
+        
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        /* 添加音乐控制按钮样式 */
+        .music-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <!-- 添加音频元素和控制按钮 -->
+    <audio id="background-music" loop>
+        <source src="./audio/周深 - 小美满.flac" type="audio/mpeg">
+    </audio>
+    <button class="music-control" onclick="toggleMusic()">⏸️</button>
+    
+    <script>
+        // 生日祝福（带前缀）
+        const birthdayWishes = [
+            "生日快乐！", "天天开心！", "永远不死！", 
+            "远离伤病！", "努力赚钱给哈基明花", "生日快乐！！！！！"
+        ].map(wish => `祝哈基杰：${wish}`);
+        // 梅西名言（无前缀）
+        const messiQuotes = [
+            "我每天都在想自己有多幸运，能做自己喜欢的事。",
+            "成功是努力的副产品，如果你专注于做好工作，成功就会来。",
+            "我不认为自己是巨星，我只是一个喜欢踢足球的人。",
+            "在球场上，重要的不是你有多强，而是你有多渴望胜利。",
+            "团队合作永远比个人英雄主义更重要，足球是11个人的运动。",
+            "我每天都在学习，即使现在，我仍觉得自己有很多要改进的地方。"
+        ];
+        const allContents = [...birthdayWishes, ...messiQuotes];
+
+        // 生成弹窗
+        function createPopup() {
+            const popup = document.createElement("div");
+            popup.className = "popup";
+            popup.textContent = allContents[Math.floor(Math.random() * allContents.length)];
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+            const left = Math.random() * (screenWidth - 350);
+            const top = Math.random() * (screenHeight - 150);
+            popup.style.left = left + "px";
+            popup.style.top = top + "px";
+            document.body.appendChild(popup);
+        }
+
+        // 批量生成
+        let count = 0;
+        const interval = setInterval(() => {
+            createPopup();
+            count++;
+            if (count >= 150) clearInterval(interval);
+        }, 1500);
+        
+        // 音乐控制功能
+        const music = document.getElementById('background-music');
+        const musicButton = document.querySelector('.music-control');
+        let isPlaying = true;
+        
+        // 尝试自动播放音乐
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                music.play().catch(e => console.log("自动播放失败:", e));
+            }, 1000);
+        });
+        
+        // 切换音乐播放/暂停
+        function toggleMusic() {
+            if (isPlaying) {
+                music.pause();
+                musicButton.textContent = '▶️';
+                isPlaying = false;
+            } else {
+                music.play().catch(e => console.log("播放失败:", e));
+                musicButton.textContent = '⏸️';
+                isPlaying = true;
+            }
+        }
+    </script>
+</body>
+</html>

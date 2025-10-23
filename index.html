@@ -139,7 +139,7 @@
             const loadingText = document.getElementById('loadingText');
             
             // 显示加载提示
-            loadingText.textContent = "音乐加载中，请稍候...";
+            loadingText.textContent = "加载中，请稍候...";
             
             // 尝试播放音乐
             const music = document.getElementById('background-music');
@@ -151,16 +151,20 @@
                     loadingText.textContent = "";
                     playPrompt.style.display = 'none';
                     musicButton.style.display = 'block';
+                    
+                    // 音乐加载完成后开始生成弹窗
+                    startPopups();
                 }).catch(error => {
                     // 音乐播放失败或需要用户交互
                     console.log("播放失败:", error);
-                    loadingText.textContent = "音乐加载失败，请确保文件存在";
-                    playPrompt.style.display = 'none';
-                    musicButton.style.display = 'block';
+                    loadingText.textContent = "加载失败，无法开始";
+                    // 音乐加载失败时不生成弹窗
                 });
             }
-            
-            // 开始生成弹窗（无论音乐是否加载完成）
+        }
+        
+        // 开始生成弹窗的函数
+        function startPopups() {
             interval = setInterval(() => {
                 createPopup();
                 count++;
